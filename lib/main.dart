@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
@@ -31,6 +32,13 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          await FirebaseFirestore.instance.collection('user').add({"id": "MyId"});
+          print('Done');
+        },
+      ),
+    );
   }
 }
