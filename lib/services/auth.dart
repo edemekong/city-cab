@@ -28,7 +28,7 @@ class AuthService {
     );
   }
 
-  Future<String> verifyAndLogin(String verificationId, String smsCode) async {
+  Future<String> verifyAndLogin(String verificationId, String smsCode, String phone) async {
     PhoneAuthCredential credential = PhoneAuthProvider.credential(verificationId: verificationId, smsCode: smsCode);
     final authCredential = await _auth!.signInWithCredential(credential);
 
@@ -36,8 +36,9 @@ class AuthService {
       final uid = authCredential.user!.uid;
       final userSanp = await FirebaseFirestore.instance.collection('users').doc(uid).get();
       if (!userSanp.exists) {
-        await FirebaseFirestore.instance.collection('user').doc(uid).set({
+        await FirebaseFirestore.instance.collection('users').doc(uid).set({
           'uid': uid,
+          'phone': phone,
         });
       }
       return uid;

@@ -86,8 +86,8 @@ class _AuthPageState extends State<AuthPage> {
                         .add(PhoneNumberVerificationEvent('+234${_phoneController.text}'));
                     _controller.animateToPage(1, duration: Duration(milliseconds: 400), curve: Curves.easeIn);
                   } else if (state is CodeSentState) {
-                    BlocProvider.of<AuthBloc>(context)
-                        .add(PhoneAuthCodeVerifiedEvent(_otpController.text, state.verificationId));
+                    BlocProvider.of<AuthBloc>(context).add(PhoneAuthCodeVerifiedEvent(
+                        _otpController.text, state.verificationId, '+234${_phoneController.text}'));
                   }
                 },
         ),

@@ -15,7 +15,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     if (event is PhoneNumberVerificationEvent) {
       yield* _phoneAuthVerificationToState(event);
     } else if (event is PhoneAuthCodeVerifiedEvent) {
-      final uid = await AuthService.instance.verifyAndLogin(event.verificationId, event.smsCode);
+      final uid = await AuthService.instance.verifyAndLogin(event.verificationId, event.smsCode, event.phone);
       yield LoggedInState(uid);
     } else if (event is CodeSentEvent) {
       yield CodeSentState(event.verificationId, event.token);
