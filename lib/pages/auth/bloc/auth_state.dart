@@ -1,0 +1,34 @@
+part of 'auth_bloc.dart';
+
+abstract class AuthState extends Equatable {
+  const AuthState();
+
+  @override
+  List<Object> get props => [];
+}
+
+class AuthInitialState extends AuthState {}
+
+class LoadingAuthState extends AuthState {}
+
+class LoggedInState extends AuthState {
+  final String uid;
+
+  LoggedInState(this.uid);
+}
+
+class AutoLoggedInState extends LoggedInState {
+  AutoLoggedInState(String uid) : super(uid);
+}
+
+class StateErrorSignUp extends AuthState {
+  final String message;
+  const StateErrorSignUp(this.message);
+}
+
+class CodeSentState extends AuthState {
+  final String verificationId;
+  final int token;
+
+  const CodeSentState(this.verificationId, this.token);
+}

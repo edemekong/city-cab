@@ -1,7 +1,7 @@
 name: citycab
 description: An open source ride hailing app with flutter.
 
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 version: 1.0.0+1
 
@@ -14,18 +14,21 @@ dependencies:
   cupertino_icons: ^1.0.2
   firebase_core: ^1.2.1
   cloud_firestore: ^2.2.1
+  #new
+  firebase_auth: ^1.4.1
+  flutter_bloc: ^7.0.1
+  equatable: ^2.0.2
+  bloc: ^7.0.0
+  sms_autofill: ^2.0.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
 flutter:
-
   uses-material-design: true
-  # assets:
-  #   - images/a_dot_burr.jpeg
-
-
+  assets:
+    - assets/images/
   # fonts:
   #   - family: Schyler
   #     fonts:
