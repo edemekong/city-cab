@@ -25,6 +25,7 @@ class PhoneNumberVerificationEvent extends AuthEvent {
 class PhoneAuthCodeVerifiedEvent extends AuthEvent {
   final String phone;
   final String smsCode;
+
   final String verificationId;
   const PhoneAuthCodeVerifiedEvent(this.smsCode, this.verificationId, this.phone);
 }
