@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:citycab/repositories/user_repository.dart';
 import 'package:citycab/services/auth.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -16,9 +17,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       yield* _phoneAuthVerificationToState(event);
     } else if (event is PhoneAuthCodeVerifiedEvent) {
       final uid = await AuthService.instance.verifyAndLogin(event.verificationId, event.smsCode, event.phone);
-      yield LoggedInState(uid);
+      final user = await UserRepository.instance.getUser(uid);
+      yield LoggedInState(user!.uid, user.firstname, user.lastname, user.email);
     } else if (event is CodeSentEvent) {
       yield CodeSentState(event.verificationId, event.token);
+    } else if (event is SignUpEvent) {
+      yield* _setUpAccount(event);
+    } else if (event is LoginCurrentUserEvent) {
+      await UserRepository.instance.signInCurrentUser();
     }
   }
 
@@ -37,5 +43,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       print('timeout $id');
       add(CodeSentEvent(id, 0));
     });
+  }
+
+  Stream<AuthState> _setUpAccount(SignUpEvent event) async* {
+    yield LoadingAuthState();
+    final user =
+        await UserRepository.instance.setUpAccount(event.uid!, event.email!, event.firstname!, event.lastname!);
+    yield LoggedInState(user!.uid, user.firstname, user.lastname, user.email);
   }
 }

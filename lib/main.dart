@@ -22,6 +22,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     bloc = AuthBloc();
+    bloc.add(LoginCurrentUserEvent());
     super.initState();
   }
 
