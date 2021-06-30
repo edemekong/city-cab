@@ -1,12 +1,12 @@
 class User {
-  String uid;
-  String firstname;
-  String lastname;
-  String email;
-  DateTime createAt;
-  bool isVerified;
+  String? uid;
+  String? firstname;
+  String? lastname;
+  String? email;
+  DateTime? createAt;
+  bool? isVerified;
 
-  User.fromJson(String uid, Map<String, dynamic> data) {
+  User.fromJson(String? uid, Map<String, dynamic> data) {
     this.uid = uid;
     if (data.containsKey('isVerified')) {
       isVerified = data['isVerified'];

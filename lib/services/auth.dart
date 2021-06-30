@@ -3,9 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthService {
   AuthService._();
-  static AuthService _instance;
+  static AuthService? _instance;
 
-  static AuthService get instance {
+  static AuthService? get instance {
     if (_instance == null) {
       _instance = AuthService._();
     }
@@ -15,10 +15,10 @@ class AuthService {
   FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future<void> verifyPhoneSendOtp(String phone,
-      {void Function(PhoneAuthCredential) completed,
-      void Function(FirebaseAuthException) failed,
-      void Function(String, int) codeSent,
-      void Function(String) codeAutoRetrievalTimeout}) async {
+      {required void Function(PhoneAuthCredential) completed,
+      required void Function(FirebaseAuthException) failed,
+      required void Function(String, int?) codeSent,
+      required void Function(String) codeAutoRetrievalTimeout}) async {
     await _auth.verifyPhoneNumber(
       phoneNumber: phone,
       verificationCompleted: completed,
@@ -28,12 +28,12 @@ class AuthService {
     );
   }
 
-  Future<String> verifyAndLogin(String verificationId, String smsCode, String phone) async {
+  Future<String?> verifyAndLogin(String verificationId, String smsCode, String phone) async {
     PhoneAuthCredential credential = PhoneAuthProvider.credential(verificationId: verificationId, smsCode: smsCode);
     final authCredential = await _auth.signInWithCredential(credential);
 
     if (authCredential.user != null) {
-      final uid = authCredential.user.uid;
+      final uid = authCredential.user!.uid;
       final userSanp = await FirebaseFirestore.instance.collection('users').doc(uid).get();
       if (!userSanp.exists) {
         await FirebaseFirestore.instance.collection('users').doc(uid).set({
@@ -51,6 +51,6 @@ class AuthService {
 
   Future<String> getCredential(PhoneAuthCredential credential) async {
     final authCredential = await _auth.signInWithCredential(credential);
-    return authCredential.user.uid;
+    return authCredential.user!.uid;
   }
 }

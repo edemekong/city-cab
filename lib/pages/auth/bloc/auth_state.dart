@@ -32,7 +32,7 @@ class StateErrorSignUp extends AuthState {
 
 class CodeSentState extends AuthState {
   final String verificationId;
-  final int token;
+  final int? token;
 
   const CodeSentState(this.verificationId, this.token);
 }

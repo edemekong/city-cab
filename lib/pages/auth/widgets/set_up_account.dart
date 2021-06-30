@@ -3,12 +3,12 @@ import 'package:citycab/ui/widget/textfields/cab_textfield.dart';
 import 'package:flutter/material.dart';
 
 class SetUpAccount extends StatelessWidget {
-  final TextEditingController firstnameController;
-  final TextEditingController lastnameController;
-  final TextEditingController emailController;
+  final TextEditingController? firstnameController;
+  final TextEditingController? lastnameController;
+  final TextEditingController? emailController;
 
   const SetUpAccount({
-    Key key,
+    Key? key,
     this.firstnameController,
     this.lastnameController,
     this.emailController,

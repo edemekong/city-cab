@@ -8,9 +8,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AuthPage extends StatefulWidget {
   final int page;
-  final String uid;
+  final String? uid;
   const AuthPage({
-    Key key,
+    Key? key,
     this.page = 0,
     this.uid,
   }) : super(key: key);
@@ -20,7 +20,7 @@ class AuthPage extends StatefulWidget {
 }
 
 class _AuthPageState extends State<AuthPage> {
-  PageController _controller;
+  PageController? _controller;
 
   int _pageIndex = 0;
 
@@ -43,7 +43,7 @@ class _AuthPageState extends State<AuthPage> {
         bloc: context.watch<AuthBloc>(),
         listener: (_, state) {
           if (state is LoggedInState) {
-            _controller.animateToPage(2, duration: Duration(milliseconds: 400), curve: Curves.easeIn);
+            _controller!.animateToPage(2, duration: Duration(milliseconds: 400), curve: Curves.easeIn);
           }
         },
         builder: (context, state) {
@@ -94,7 +94,7 @@ class _AuthPageState extends State<AuthPage> {
                   if (_phoneController.text.isNotEmpty && state is AuthInitialState && _pageIndex == 0) {
                     BlocProvider.of<AuthBloc>(context)
                         .add(PhoneNumberVerificationEvent('+234${_phoneController.text}'));
-                    _controller.animateToPage(1, duration: Duration(milliseconds: 400), curve: Curves.easeIn);
+                    _controller!.animateToPage(1, duration: Duration(milliseconds: 400), curve: Curves.easeIn);
                   } else if (state is CodeSentState && _pageIndex == 1) {
                     BlocProvider.of<AuthBloc>(context).add(PhoneAuthCodeVerifiedEvent(
                         _otpController.text, state.verificationId, '+234${_phoneController.text}'));

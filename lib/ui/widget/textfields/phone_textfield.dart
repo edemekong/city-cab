@@ -4,12 +4,12 @@ import '../../theme.dart';
 
 class PhoneTextField extends StatefulWidget {
   const PhoneTextField({
-    Key key,
-    TextEditingController numnberController,
+    Key? key,
+    TextEditingController? numnberController,
   })  : _numnberController = numnberController,
         super(key: key);
 
-  final TextEditingController _numnberController;
+  final TextEditingController? _numnberController;
 
   @override
   _PhoneTextFieldState createState() => _PhoneTextFieldState();

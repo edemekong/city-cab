@@ -8,16 +8,16 @@ import '../../../ui/theme.dart';
 
 class OtpPage extends StatefulWidget {
   const OtpPage({
-    Key key,
-    TextEditingController otpController,
+    Key? key,
+    TextEditingController? otpController,
     this.bloc,
     this.phoneNumber,
   })  : _otpController = otpController,
         super(key: key);
 
-  final TextEditingController _otpController;
-  final AuthBloc bloc;
-  final String phoneNumber;
+  final TextEditingController? _otpController;
+  final AuthBloc? bloc;
+  final String? phoneNumber;
 
   @override
   _OtpPageState createState() => _OtpPageState();
@@ -69,7 +69,7 @@ class _OtpPageState extends State<OtpPage> {
                 ).paddingBottom(8),
                 Text(
                   '+234 ${widget.phoneNumber}',
-                  style: Theme.of(context).textTheme.headline6.copyWith(fontWeight: FontWeight.bold),
+                  style: Theme.of(context).textTheme.headline6!.copyWith(fontWeight: FontWeight.bold),
                 ).paddingBottom(CityTheme.elementSpacing),
                 PinFieldAutoFill(
                   controller: widget._otpController,
@@ -80,7 +80,7 @@ class _OtpPageState extends State<OtpPage> {
                   currentCode: '',
                   onCodeSubmitted: (code) {},
                   onCodeChanged: (code) {
-                    if (code.length == 6) {
+                    if (code!.length == 6) {
                       FocusScope.of(context).requestFocus(FocusNode());
                     }
                   },
@@ -89,7 +89,7 @@ class _OtpPageState extends State<OtpPage> {
                 state is LoadingAuthState
                     ? Text(
                         'Verifying...',
-                        style: Theme.of(context).textTheme.bodyText1.copyWith(fontWeight: FontWeight.w400),
+                        style: Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.w400),
                       ).paddingBottom(8)
                     : SizedBox.shrink(),
                 state is CodeSentState
@@ -97,11 +97,11 @@ class _OtpPageState extends State<OtpPage> {
                         children: [
                           Text(
                             'Resend code in ',
-                            style: Theme.of(context).textTheme.bodyText1.copyWith(fontWeight: FontWeight.w400),
+                            style: Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.w400),
                           ),
                           Text(
                             '0:$count',
-                            style: Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.bold),
+                            style: Theme.of(context).textTheme.subtitle1!.copyWith(fontWeight: FontWeight.bold),
                           )
                         ],
                       ).paddingBottom(8)

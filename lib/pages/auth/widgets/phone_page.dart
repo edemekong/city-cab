@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 
 class PhonePage extends StatelessWidget {
   const PhonePage({
-    Key key,
-    TextEditingController numnberController,
+    Key? key,
+    TextEditingController? numnberController,
   })  : _numnberController = numnberController,
         super(key: key);
 
-  final TextEditingController _numnberController;
+  final TextEditingController? _numnberController;
 
   @override
   Widget build(BuildContext context) {

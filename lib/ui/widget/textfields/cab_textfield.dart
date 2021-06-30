@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import '../../theme.dart';
 
 class CityTextField extends StatelessWidget {
-  final String label;
-  final TextEditingController controller;
+  final String? label;
+  final TextEditingController? controller;
   const CityTextField({
-    Key key,
+    Key? key,
     this.controller,
     this.label,
   }) : super(key: key);

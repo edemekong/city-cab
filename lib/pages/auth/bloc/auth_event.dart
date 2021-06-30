@@ -8,7 +8,7 @@ abstract class AuthEvent extends Equatable {
 }
 
 class SignUpEvent extends AuthEvent {
-  final String uid;
+  final String? uid;
   final String firstname;
   final String lastname;
   final String email;
@@ -30,7 +30,7 @@ class PhoneAuthCodeVerifiedEvent extends AuthEvent {
 }
 
 class CompletedAuthEvent extends AuthEvent {
-  final AuthCredential credential;
+  final auth.AuthCredential credential;
   const CompletedAuthEvent(this.credential);
 }
 
@@ -40,7 +40,7 @@ class ErrorOccuredEvent extends AuthEvent {
 }
 
 class CodeSentEvent extends AuthEvent {
-  final int token;
+  final int? token;
   final String verificationId;
   const CodeSentEvent(this.verificationId, this.token);
 }
