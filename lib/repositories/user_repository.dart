@@ -5,22 +5,22 @@ import 'package:flutter/material.dart';
 
 class UserRepository {
   UserRepository._();
-  static UserRepository? _instance;
+  static UserRepository _instance;
 
   static UserRepository get instance {
     if (_instance == null) {
       _instance = UserRepository._();
     }
-    return _instance!;
+    return _instance;
   }
 
-  ValueNotifier<User?> userNotifier = ValueNotifier<User?>(null);
+  ValueNotifier<User> userNotifier = ValueNotifier<User>(null);
 
-  User? get currentUser {
+  User get currentUser {
     return userNotifier.value;
   }
 
-  Future<User?> setUpAccount(String uid, String email, String firstname, String lastname) async {
+  Future<User> setUpAccount(String uid, String email, String firstname, String lastname) async {
     await FirebaseFirestore.instance.collection('users').doc(uid).update({
       'email': email,
       'firstname': firstname,
@@ -32,7 +32,7 @@ class UserRepository {
     return userNotifier.value;
   }
 
-  Future<User?> getUser(String uid) async {
+  Future<User> getUser(String uid) async {
     userNotifier.value = null;
     DocumentSnapshot userSnapshot = await FirebaseFirestore.instance.collection('users').doc(uid).get();
     if (!userSnapshot.exists) {
@@ -48,7 +48,7 @@ class UserRepository {
 
   Future<void> signInCurrentUser() async {
     if (UserRepository.instance.currentUser == null) {
-      auth.User? authUser = auth.FirebaseAuth.instance.currentUser;
+      auth.User authUser = auth.FirebaseAuth.instance.currentUser;
       if (authUser == null) {
         print("no current user");
         try {

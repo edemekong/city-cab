@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 
 class PhonePage extends StatelessWidget {
   const PhonePage({
-    Key? key,
-    required TextEditingController numnberController,
+    Key key,
+    TextEditingController numnberController,
   })  : _numnberController = numnberController,
         super(key: key);
 

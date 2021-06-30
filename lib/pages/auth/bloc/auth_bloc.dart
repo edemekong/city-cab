@@ -18,7 +18,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     } else if (event is PhoneAuthCodeVerifiedEvent) {
       final uid = await AuthService.instance.verifyAndLogin(event.verificationId, event.smsCode, event.phone);
       final user = await UserRepository.instance.getUser(uid);
-      yield LoggedInState(user!.uid, user.firstname, user.lastname, user.email);
+      yield LoggedInState(user.uid, user.firstname, user.lastname, user.email);
     } else if (event is CodeSentEvent) {
       yield CodeSentState(event.verificationId, event.token);
     } else if (event is SignUpEvent) {
@@ -36,9 +36,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }, failed: (error) {
       print(error);
       add(ErrorOccuredEvent(error.toString()));
-    }, codeSent: (String id, int? token) {
+    }, codeSent: (String id, int token) {
       print('code sent $id');
-      add(CodeSentEvent(id, token!));
+      add(CodeSentEvent(id, token));
     }, codeAutoRetrievalTimeout: (id) {
       print('timeout $id');
       add(CodeSentEvent(id, 0));
@@ -47,8 +47,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   Stream<AuthState> _setUpAccount(SignUpEvent event) async* {
     yield LoadingAuthState();
-    final user =
-        await UserRepository.instance.setUpAccount(event.uid!, event.email!, event.firstname!, event.lastname!);
-    yield LoggedInState(user!.uid, user.firstname, user.lastname, user.email);
+    final user = await UserRepository.instance.setUpAccount(event.uid, event.email, event.firstname, event.lastname);
+    yield LoggedInState(user.uid, user.firstname, user.lastname, user.email);
   }
 }

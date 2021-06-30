@@ -6,16 +6,16 @@ class CityTextField extends StatelessWidget {
   final String label;
   final TextEditingController controller;
   const CityTextField({
-    Key? key,
-    required this.controller,
-    required this.label,
+    Key key,
+    this.controller,
+    this.label,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return TextField(
       controller: controller,
-      keyboardType: TextInputType.phone,
+      keyboardType: TextInputType.text,
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.symmetric(horizontal: 10),
         enabledBorder: OutlineInputBorder(),

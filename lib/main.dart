@@ -17,7 +17,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  late AuthBloc bloc;
+  AuthBloc bloc;
 
   @override
   void initState() {
