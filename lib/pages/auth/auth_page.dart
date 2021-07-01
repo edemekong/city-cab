@@ -60,9 +60,7 @@ class _AuthPageState extends State<AuthPage> {
                 color: Colors.white,
                 child: PageView(
                   controller: _controller,
-                  onPageChanged: (v) {
-                    print(v);
-                  },
+                  onPageChanged: onPageChanged,
                   physics: NeverScrollableScrollPhysics(),
                   children: [
                     PhonePage(numnberController: _phoneController),
@@ -97,13 +95,13 @@ class _AuthPageState extends State<AuthPage> {
           onPressed: state is LoadingAuthState
               ? null
               : () {
-                  print('Hey');
-                  print(_pageIndex);
-
                   if (_phoneController.text.isNotEmpty && state is AuthInitialState && _pageIndex == 0) {
                     BlocProvider.of<AuthBloc>(context)
                         .add(PhoneNumberVerificationEvent('+234${_phoneController.text}'));
                     _controller!.animateToPage(1, duration: Duration(milliseconds: 400), curve: Curves.easeIn);
+                    setState(() {
+                      _pageIndex = 1;
+                    });
                   } else if (state is CodeSentState && _pageIndex == 1) {
                     BlocProvider.of<AuthBloc>(context).add(PhoneAuthCodeVerifiedEvent(
                         _otpController.text, state.verificationId, '+234${_phoneController.text}'));
