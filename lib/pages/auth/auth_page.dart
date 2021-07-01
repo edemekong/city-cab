@@ -27,6 +27,7 @@ class _AuthPageState extends State<AuthPage> {
   @override
   void initState() {
     _controller = PageController(initialPage: widget.page);
+    _pageIndex = widget.page;
     super.initState();
   }
 
@@ -44,6 +45,9 @@ class _AuthPageState extends State<AuthPage> {
         listener: (_, state) {
           if (state is LoggedInState) {
             _controller!.animateToPage(2, duration: Duration(milliseconds: 400), curve: Curves.easeIn);
+            setState(() {
+              _pageIndex = 2;
+            });
           }
         },
         builder: (context, state) {
@@ -56,7 +60,9 @@ class _AuthPageState extends State<AuthPage> {
                 color: Colors.white,
                 child: PageView(
                   controller: _controller,
-                  onPageChanged: onPageChanged,
+                  onPageChanged: (v) {
+                    print(v);
+                  },
                   physics: NeverScrollableScrollPhysics(),
                   children: [
                     PhonePage(numnberController: _phoneController),
@@ -91,6 +97,9 @@ class _AuthPageState extends State<AuthPage> {
           onPressed: state is LoadingAuthState
               ? null
               : () {
+                  print('Hey');
+                  print(_pageIndex);
+
                   if (_phoneController.text.isNotEmpty && state is AuthInitialState && _pageIndex == 0) {
                     BlocProvider.of<AuthBloc>(context)
                         .add(PhoneNumberVerificationEvent('+234${_phoneController.text}'));
@@ -98,6 +107,9 @@ class _AuthPageState extends State<AuthPage> {
                   } else if (state is CodeSentState && _pageIndex == 1) {
                     BlocProvider.of<AuthBloc>(context).add(PhoneAuthCodeVerifiedEvent(
                         _otpController.text, state.verificationId, '+234${_phoneController.text}'));
+                    setState(() {
+                      _pageIndex = 2;
+                    });
                   } else if (_pageIndex == 2) {
                     BlocProvider.of<AuthBloc>(context).add(SignUpEvent(
                       _firstNameController.text,
@@ -113,6 +125,8 @@ class _AuthPageState extends State<AuthPage> {
   }
 
   void onPageChanged(int value) {
+    print('Me here');
+    print(value);
     setState(() {
       _pageIndex = value;
     });
