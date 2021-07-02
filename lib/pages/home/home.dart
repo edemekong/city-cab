@@ -1,5 +1,6 @@
 import 'package:citycab/models/user.dart';
 import 'package:citycab/pages/auth/auth_page.dart';
+import 'package:citycab/pages/map/map_view.dart';
 import 'package:citycab/repositories/user_repository.dart';
 import 'package:flutter/material.dart';
 
@@ -14,19 +15,15 @@ class HomePage extends StatelessWidget {
         valueListenable: UserRepository.instance!.userNotifier,
         builder: (context, value, child) {
           if (value != null) {
-            return Builder(builder: (context) {
-              if (!value.isVerified!) {
-                return AuthPage(page: 2, uid: value.uid);
-              } else {
-                return Container(
-                  height: MediaQuery.of(context).size.height,
-                  width: MediaQuery.of(context).size.width,
-                  color: Colors.white,
-                  child: Center(
-                      child: Text('Successfully Logged In \n\n${UserRepository.instance!.userNotifier.value!.email}')),
-                );
-              }
-            });
+            return Builder(
+              builder: (context) {
+                if (!value.isVerified!) {
+                  return AuthPage(page: 2, uid: value.uid);
+                } else {
+                  return MapView();
+                }
+              },
+            );
           } else {
             return AuthPage();
           }
