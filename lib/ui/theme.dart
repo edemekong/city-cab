@@ -58,6 +58,7 @@ class CityTheme {
 
   static Color cityblue = Color(0xFF2669A4);
   static Color cityWhite = Color(0xFFFFFFFF);
+  static Color cityBlack = Color(0xFF3E3D3D);
 
   static ThemeData theme = ThemeData(
     primaryColor: cityblue,

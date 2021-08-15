@@ -26,7 +26,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
     await MapService.instance?.getCurrentPosition();
     MapService.instance?.listenToPositionChanges();
     final route = await MapService.instance
-        ?.getRouteCoordinates(MapService.instance?.currentPosition?.value, LatLng(4.824167, 7.033611));
+        ?.getRouteCoordinates(MapService.instance?.currentPosition?.value, LatLng(4.813763, 7.018683));
     yield LoadedCurrentPosition(currentPosition?.value, MapService.instance!.markers.value, route);
   }
 }

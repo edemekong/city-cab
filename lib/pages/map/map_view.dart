@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:citycab/pages/map/bloc/map_bloc.dart';
+import 'package:citycab/services/map_services.dart';
+import 'package:citycab/ui/info_window/custom_info_window.dart';
 import 'package:citycab/ui/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -28,6 +30,7 @@ class _MapViewState extends State<MapView> {
   @override
   void dispose() {
     bloc.close();
+    MapService.instance?.controller.dispose();
     super.dispose();
   }
 
@@ -44,22 +47,39 @@ class _MapViewState extends State<MapView> {
               if (state is LoadingCurrentPosition) {
                 return Center(child: const CircularProgressIndicator());
               } else if (state is LoadedCurrentPosition) {
-                return GoogleMap(
-                  mapType: MapType.normal,
-                  polylines: {
-                    if (state.polyline != null)
-                      Polyline(
-                        polylineId: const PolylineId('overview_polyline'),
-                        color: CityTheme.cityblue,
-                        width: 5,
-                        points: state.polyline?.map((e) => LatLng(e.latitude, e.longitude)).toList() ?? [],
-                      ),
-                  },
-                  markers: state.currentPositionMarker!,
-                  initialCameraPosition: CameraPosition(target: state.position!, zoom: 15),
-                  onMapCreated: (GoogleMapController controller) {
-                    _controller.complete(controller);
-                  },
+                return Stack(
+                  children: [
+                    GoogleMap(
+                      mapType: MapType.normal,
+                      polylines: {
+                        if (state.polyline != null)
+                          Polyline(
+                            polylineId: const PolylineId('overview_polyline'),
+                            color: CityTheme.cityblue,
+                            width: 5,
+                            points: state.polyline?.map((e) => LatLng(e.latitude, e.longitude)).toList() ?? [],
+                          ),
+                      },
+                      markers: state.currentPositionMarker!,
+                      initialCameraPosition: CameraPosition(target: state.position!, zoom: 15),
+                      onMapCreated: (GoogleMapController controller) {
+                        _controller.complete(controller);
+                        MapService.instance?.controller.googleMapController = controller;
+                      },
+                      onTap: (position) {
+                        MapService.instance?.controller.hideInfoWindow!();
+                      },
+                      onCameraMove: (controller) {
+                        MapService.instance?.controller.onCameraMove!();
+                      },
+                    ),
+                    CustomInfoWindow(
+                      controller: MapService.instance!.controller,
+                      height: MediaQuery.of(context).size.width * 0.15,
+                      width: MediaQuery.of(context).size.width * 0.5,
+                      offset: 50,
+                    ),
+                  ],
                 );
               } else {
                 return SizedBox.shrink();
