@@ -1,13 +1,18 @@
+import 'dart:typed_data';
+
 import 'package:citycab/constant/google_map_key.dart';
 import 'package:citycab/models/citycab_info_window.dart';
 import 'package:citycab/ui/info_window/custom_info_window.dart';
 import 'package:citycab/ui/info_window/custom_widow.dart';
+import 'package:citycab/utils/images_assets.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'dart:ui' as ui;
 import 'dart:convert';
 
 import 'code_generator.dart';
@@ -33,13 +38,13 @@ class MapService {
 
   CustomInfoWindowController controller = CustomInfoWindowController();
 
-  Set<Marker?> addMarker(String markerId, LatLng? position,
+  Set<Marker?> addMarker(String markerId, LatLng? position, BitmapDescriptor icon,
       {required String title, required DateTime time, required InfoWindowType type}) {
     if (position != null) {
       final marker = Marker(
           markerId: MarkerId(markerId),
           position: position,
-          infoWindow: InfoWindow(title: title),
+          icon: icon,
           onTap: () {
             controller.addInfoWindow!(
               CustomWindow(
@@ -73,7 +78,9 @@ class MapService {
       currentPosition?.value = LatLng(position.latitude, position.longitude);
 
       final Placemark placemark = await getAddressFromCoodinate(LatLng(position.latitude, position.longitude));
-      addMarker(CodeGenerator.instance!.generateCode('m'), currentPosition!.value,
+      final Uint8List markerIcon = await getBytesFromAsset(ImagesAsset.circlePin, 50);
+      final icon = BitmapDescriptor.fromBytes(markerIcon);
+      addMarker(CodeGenerator.instance!.generateCode('m'), currentPosition!.value, icon,
           title: '${placemark.street}, ${placemark.locality}', time: DateTime.now(), type: InfoWindowType.position);
       return currentPosition?.value;
     } else {
@@ -105,7 +112,7 @@ class MapService {
   Future<double> getPositionBetweenKilometers(LatLng startLatLng, LatLng endLatLng) async {
     final meters = Geolocator.distanceBetween(
         startLatLng.latitude, startLatLng.longitude, endLatLng.latitude, endLatLng.longitude);
-    return meters / 1000;
+    return meters / 500;
   }
 
   Future<List<PointLatLng>> getRouteCoordinates(LatLng? startLatLng, LatLng? endLatLng) async {
@@ -123,7 +130,9 @@ class MapService {
 
     final name = await getAddressFromCoodinate(LatLng(endLatLng!.latitude, endLatLng.longitude));
     final polylines = PolylinePoints().decodePolyline(points);
-    addMarker(CodeGenerator.instance!.generateCode('m'), endLatLng,
+    final Uint8List markerIcon = await getBytesFromAsset(ImagesAsset.pin, 50);
+    final icon = BitmapDescriptor.fromBytes(markerIcon);
+    addMarker(CodeGenerator.instance!.generateCode('m'), endLatLng, icon,
         title: '${name.street}, ${name.locality}', time: DateTime.now(), type: InfoWindowType.destination);
     return polylines;
   }
@@ -141,5 +150,12 @@ class MapService {
         currentPosition?.value = LatLng(position.latitude, position.longitude);
       });
     }
+  }
+
+  Future<Uint8List> getBytesFromAsset(String path, int width) async {
+    ByteData data = await rootBundle.load(path);
+    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(), targetWidth: width);
+    ui.FrameInfo fi = await codec.getNextFrame();
+    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!.buffer.asUint8List();
   }
 }

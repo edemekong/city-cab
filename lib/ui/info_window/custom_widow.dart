@@ -28,16 +28,16 @@ class CustomWindow extends StatelessWidget {
                   children: [
                     if (info.type == InfoWindowType.position)
                       Container(
-                        width: MediaQuery.of(context).size.width * 0.15,
+                        width: MediaQuery.of(context).size.width * 0.12,
                         color: CityTheme.cityblue,
                         height: double.infinity,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text('${(info.time!.inMinutes) % 60}',
-                                style: Theme.of(context).textTheme.headline6?.copyWith(color: CityTheme.cityWhite)),
+                                style: Theme.of(context).textTheme.subtitle1?.copyWith(color: CityTheme.cityWhite)),
                             Text('min',
-                                style: Theme.of(context).textTheme.bodyText1?.copyWith(color: CityTheme.cityWhite)),
+                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: CityTheme.cityWhite)),
                           ],
                         ),
                       ),

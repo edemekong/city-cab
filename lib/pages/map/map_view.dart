@@ -55,7 +55,7 @@ class _MapViewState extends State<MapView> {
                         if (state.polyline != null)
                           Polyline(
                             polylineId: const PolylineId('overview_polyline'),
-                            color: CityTheme.cityblue,
+                            color: CityTheme.cityBlack,
                             width: 5,
                             points: state.polyline?.map((e) => LatLng(e.latitude, e.longitude)).toList() ?? [],
                           ),
@@ -75,9 +75,9 @@ class _MapViewState extends State<MapView> {
                     ),
                     CustomInfoWindow(
                       controller: MapService.instance!.controller,
-                      height: MediaQuery.of(context).size.width * 0.15,
-                      width: MediaQuery.of(context).size.width * 0.5,
-                      offset: 50,
+                      height: MediaQuery.of(context).size.width * 0.12,
+                      width: MediaQuery.of(context).size.width * 0.4,
+                      offset: 30,
                     ),
                   ],
                 );
