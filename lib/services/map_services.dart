@@ -71,6 +71,24 @@ class MapService {
     }
   }
 
+  Future<Uint8List> getBytesFromAsset(String path, int width) async {
+    ByteData data = await rootBundle.load(path);
+    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(), targetWidth: width);
+    ui.FrameInfo fi = await codec.getNextFrame();
+    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!.buffer.asUint8List();
+  }
+
+  Future<double> getPositionBetweenKilometers(LatLng startLatLng, LatLng endLatLng) async {
+    final meters = Geolocator.distanceBetween(
+        startLatLng.latitude, startLatLng.longitude, endLatLng.latitude, endLatLng.longitude);
+    return meters / 500;
+  }
+
+  Future<Placemark> getAddressFromCoodinate(LatLng position) async {
+    List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
+    return placemarks.first;
+  }
+
   Future<LatLng?> getCurrentPosition() async {
     final check = await requestAndCheckPermission();
     if (check) {
@@ -102,17 +120,6 @@ class MapService {
     } else {
       return false;
     }
-  }
-
-  Future<Placemark> getAddressFromCoodinate(LatLng position) async {
-    List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
-    return placemarks.first;
-  }
-
-  Future<double> getPositionBetweenKilometers(LatLng startLatLng, LatLng endLatLng) async {
-    final meters = Geolocator.distanceBetween(
-        startLatLng.latitude, startLatLng.longitude, endLatLng.latitude, endLatLng.longitude);
-    return meters / 500;
   }
 
   Future<List<PointLatLng>> getRouteCoordinates(LatLng? startLatLng, LatLng? endLatLng) async {
@@ -150,12 +157,5 @@ class MapService {
         currentPosition?.value = LatLng(position.latitude, position.longitude);
       });
     }
-  }
-
-  Future<Uint8List> getBytesFromAsset(String path, int width) async {
-    ByteData data = await rootBundle.load(path);
-    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(), targetWidth: width);
-    ui.FrameInfo fi = await codec.getNextFrame();
-    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!.buffer.asUint8List();
   }
 }

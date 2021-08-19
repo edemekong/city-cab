@@ -77,7 +77,7 @@ class _MapViewState extends State<MapView> {
                       controller: MapService.instance!.controller,
                       height: MediaQuery.of(context).size.width * 0.12,
                       width: MediaQuery.of(context).size.width * 0.4,
-                      offset: 30,
+                      offset: 50,
                     ),
                   ],
                 );
