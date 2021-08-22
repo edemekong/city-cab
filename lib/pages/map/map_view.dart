@@ -63,6 +63,12 @@ class _MapViewState extends State<MapView> {
                   currentAddressController.text = "${state.address?.street}, ${state.address?.city}";
                 });
               }
+              if (state is LoadedRoutes) {
+                setState(() {
+                  currentAddressController.text = "${state.startAddress.street}, ${state.startAddress.city}";
+                  destinationAddressController.text = "${state.endAddress.street}, ${state.endAddress.city}";
+                });
+              }
             },
             bloc: bloc,
             builder: (context, state) {
