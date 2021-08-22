@@ -14,9 +14,20 @@ class LoadingCurrentPosition extends MapState {
 }
 
 class LoadedCurrentPosition extends MapState {
-  final LatLng? position;
-  final Set<Marker>? currentPositionMarker;
-  final List<PointLatLng>? polyline;
+  final Address? address;
+  const LoadedCurrentPosition(this.address);
+}
 
-  const LoadedCurrentPosition(this.position, this.currentPositionMarker, this.polyline);
+class LoadingAddress extends MapState {}
+
+class LoadedSearchAddressResults extends MapState {
+  final List<Address>? address;
+  const LoadedSearchAddressResults(this.address);
+}
+
+class LoadedRoutes extends MapState {
+  final Address startAddress;
+  final Address endAddress;
+
+  const LoadedRoutes(this.startAddress, this.endAddress);
 }

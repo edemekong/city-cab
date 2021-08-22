@@ -16,7 +16,7 @@ class CustomWindow extends StatelessWidget {
             child: Container(
               decoration: BoxDecoration(
                 color: CityTheme.cityWhite,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(6),
                 boxShadow: [
                   BoxShadow(color: CityTheme.cityBlack.withOpacity(.4), spreadRadius: 2, blurRadius: 5),
                 ],

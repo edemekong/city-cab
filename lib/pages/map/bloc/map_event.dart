@@ -7,8 +7,9 @@ abstract class MapEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class LoadCurrentPosition extends MapEvent {
-  const LoadCurrentPosition();
+class LoadMyPosition extends MapEvent {
+  final LatLng? latLng;
+  const LoadMyPosition({this.latLng});
 }
 
 class LoadPositionBetweenPoints extends MapEvent {
@@ -17,8 +18,13 @@ class LoadPositionBetweenPoints extends MapEvent {
   const LoadPositionBetweenPoints(this.startLatLng, this.endLatLng);
 }
 
-class LoadouteCoordinates extends MapEvent {
+class LoadRouteCoordinates extends MapEvent {
   final LatLng startLatLng;
   final LatLng endLatLng;
-  const LoadouteCoordinates(this.startLatLng, this.endLatLng);
+  const LoadRouteCoordinates(this.startLatLng, this.endLatLng);
+}
+
+class SearchAddress extends MapEvent {
+  final String query;
+  const SearchAddress(this.query);
 }
