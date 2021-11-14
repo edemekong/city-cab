@@ -1,9 +1,8 @@
-import 'package:citycab/pages/auth/bloc/auth_bloc.dart';
 import 'package:citycab/pages/home/home.dart';
+import 'package:citycab/repositories/user_repository.dart';
 import 'package:citycab/ui/theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,30 +16,18 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  late AuthBloc bloc;
-
   @override
   void initState() {
-    bloc = AuthBloc();
-    bloc.add(LoginCurrentUserEvent());
+    UserRepository.instance?.signInCurrentUser();
     super.initState();
   }
 
   @override
-  void dispose() {
-    bloc.close();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return BlocProvider<AuthBloc>(
-      create: (context) => bloc,
-      child: MaterialApp(
-        title: 'City Cab',
-        theme: CityTheme.theme,
-        home: HomePage(),
-      ),
+    return MaterialApp(
+      title: 'City Cab',
+      theme: CityTheme.theme,
+      home: HomePage(),
     );
   }
 }

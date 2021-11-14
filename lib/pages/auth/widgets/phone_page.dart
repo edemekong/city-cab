@@ -1,18 +1,15 @@
+import 'package:citycab/pages/auth/auth_state.dart';
 import 'package:citycab/ui/widget/textfields/phone_textfield.dart';
 import 'package:citycab/utils/images_assets.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class PhonePage extends StatelessWidget {
-  const PhonePage({
-    Key? key,
-    TextEditingController? numnberController,
-  })  : _numnberController = numnberController,
-        super(key: key);
-
-  final TextEditingController? _numnberController;
+  const PhonePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final state = Provider.of<AuthState>(context);
     return Container(
       color: Colors.white,
       child: SingleChildScrollView(
@@ -21,14 +18,15 @@ class PhonePage extends StatelessWidget {
             AspectRatio(
               aspectRatio: 1,
               child: Container(
-                  decoration: BoxDecoration(
-                      image: DecorationImage(image: AssetImage(ImagesAsset.cabBg), fit: BoxFit.fitWidth))),
+                decoration:
+                    BoxDecoration(image: DecorationImage(image: AssetImage(ImagesAsset.cabBg), fit: BoxFit.fitWidth)),
+              ),
             ),
             Container(
               padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
-                  PhoneTextField(numnberController: _numnberController),
+                  PhoneTextField(numnberController: state.phoneController),
                 ],
               ),
             ),

@@ -18,14 +18,14 @@ class HomePage extends StatelessWidget {
             return Builder(
               builder: (context) {
                 if (!value.isVerified!) {
-                  return AuthPage(page: 2, uid: value.uid);
+                  return AuthPageWidget(page: 2, uid: value.uid);
                 } else {
-                  return MapView();
+                  return MapViewWidget();
                 }
               },
             );
           } else {
-            return AuthPage();
+            return AuthPageWidget(page: 0);
           }
         },
       ),
