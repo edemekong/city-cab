@@ -29,6 +29,7 @@ class UserRepository {
       'isVerified': true,
     });
     userNotifier.value = await UserRepository.instance!.getUser(uid);
+    userNotifier.notifyListeners();
     return userNotifier.value;
   }
 
@@ -42,6 +43,8 @@ class UserRepository {
       print(data['email']);
       userNotifier.value = User.fromJson(uid, data);
     }
+
+    userNotifier.notifyListeners();
 
     return userNotifier.value;
   }

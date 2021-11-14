@@ -26,7 +26,7 @@ class Deley {
 
   Deley({this.milliseconds});
   run(VoidCallback action) {
-    if (null != _timer) {
+    if (_timer != null) {
       _timer?.cancel();
     }
     _timer = Timer(Duration(microseconds: milliseconds ?? 400), action);
@@ -50,7 +50,7 @@ class MapService {
   Duration duration = Duration();
   final _deley = Deley(milliseconds: 2000);
 
-  ValueNotifier<Address?>? currentPosition = ValueNotifier<Address?>(null);
+  ValueNotifier<Address?> currentPosition = ValueNotifier<Address?>(null);
   ValueNotifier<Set<Marker>> markers = ValueNotifier<Set<Marker>>({});
   List<Address> searchedAddress = [];
 
@@ -126,12 +126,13 @@ class MapService {
       Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
 
       final address = await getAddressFromCoodinate(LatLng(position.latitude, position.longitude));
-      currentPosition?.value = address;
+      currentPosition.value = address;
+      currentPosition.notifyListeners();
 
       final icon = await getMapIcon(ImagesAsset.circlePin);
-      addMarker(CodeGenerator.instance!.generateCode('m'), currentPosition!.value, icon,
+      addMarker(CodeGenerator.instance!.generateCode('m'), currentPosition.value, icon,
           time: DateTime.now(), type: InfoWindowType.position);
-      return currentPosition?.value;
+      return currentPosition.value;
     } else {
       return null;
     }
@@ -185,10 +186,10 @@ class MapService {
 
     final startAddress =
         await getAddressFromCoodinate(LatLng(startLatLng!.latitude, startLatLng.longitude), polylines: polylines);
-    currentPosition?.value = startAddress;
+    currentPosition.value = startAddress;
 
     BitmapDescriptor icon2 = await getMapIcon(ImagesAsset.circlePin);
-    await addMarker(CodeGenerator.instance!.generateCode('m1'), currentPosition?.value, icon2,
+    await addMarker(CodeGenerator.instance!.generateCode('m1'), currentPosition.value, icon2,
         time: DateTime.now(), type: InfoWindowType.position);
 
     return endAddress;
@@ -210,7 +211,7 @@ class MapService {
           final currentPositionMarker = markers.value.firstWhere((marker) => marker.markerId.value == 'm1');
           currentPositionMarker.copyWith(positionParam: LatLng(position.latitude, position.longitude));
         } catch (_) {}
-        currentPosition?.value = await getAddressFromCoodinate(LatLng(position.latitude, position.longitude));
+        currentPosition.value = await getAddressFromCoodinate(LatLng(position.latitude, position.longitude));
       });
     }
   }
@@ -251,7 +252,7 @@ class MapService {
     controller.hideInfoWindow!();
 
     final icon = await getMapIcon(ImagesAsset.circlePin);
-    await addMarker(CodeGenerator.instance!.generateCode('m1'), currentPosition?.value, icon,
+    await addMarker(CodeGenerator.instance!.generateCode('m1'), currentPosition.value, icon,
         time: DateTime.now(), type: InfoWindowType.position);
 
     return address;
