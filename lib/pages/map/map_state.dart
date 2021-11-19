@@ -41,7 +41,7 @@ class MapState extends ChangeNotifier {
 
   MapState() {
     focusNode = FocusNode();
-    isSelectedOptions = List.generate(3, (index) => index == 0 ? true : false);
+    isSelectedOptions = List.generate(rideOptions.length, (index) => index == 0 ? true : false);
     selectedOption = rideOptions[0];
     destinationAddressController
       ..addListener(() {

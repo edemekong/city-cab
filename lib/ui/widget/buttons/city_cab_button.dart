@@ -30,7 +30,7 @@ class CityCabButton extends StatelessWidget {
 
     return InkWell(
       borderRadius: BorderRadius.all(Radius.circular(10)),
-      onTap: onTap,
+      onTap: buttonState == ButtonState.disabled ? null : onTap,
       child: Container(
         height: 49,
         constraints: BoxConstraints(minWidth: 100),
