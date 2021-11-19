@@ -59,32 +59,6 @@ class SearchMapBar extends StatelessWidget {
                 ),
               ],
             ),
-            Builder(builder: (context) {
-              if (state.searchedAddress.isNotEmpty && state.focusNode!.hasFocus) {
-                return Container(
-                  width: double.infinity,
-                  height: 350,
-                  color: Colors.grey.withOpacity(.1),
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: state.searchedAddress.length,
-                    itemBuilder: (context, index) {
-                      final address = state.searchedAddress[index];
-                      return ListTile(
-                        title: Text('${address.street}, ${address.city}'),
-                        subtitle: Text('${address.state}, ${address.country}'),
-                        trailing: Icon(Icons.place_outlined, size: 12),
-                        onTap: () {
-                          state.onTapAddressList(address);
-                        },
-                      );
-                    },
-                  ),
-                );
-              } else {
-                return SizedBox.shrink();
-              }
-            }),
           ],
         ),
       ).paddingAll(8),

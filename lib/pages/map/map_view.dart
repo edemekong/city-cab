@@ -1,7 +1,9 @@
 import 'package:citycab/pages/map/map_state.dart';
+import 'package:citycab/pages/map/widgets/bottom_slide.dart';
 import 'package:citycab/pages/map/widgets/search_map_address.dart';
 import 'package:citycab/services/map_services.dart';
 import 'package:citycab/ui/info_window/custom_info_window.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
@@ -44,7 +46,13 @@ class MapView extends StatelessWidget {
                 width: MediaQuery.of(context).size.width * 0.4,
                 offset: 50,
               ),
-              Positioned(top: 10, left: 15, right: 15, child: SearchMapBar()),
+              Positioned(
+                bottom: 0,
+                child: BottomSlider(),
+              ),
+              state.rideState == RideState.searchingAddress
+                  ? Positioned(top: 10, left: 15, right: 15, child: SearchMapBar())
+                  : SizedBox.shrink(),
             ],
           );
         },
