@@ -11,6 +11,22 @@ To kick start this project;
 - Follow the videos content of this project on [YOUTUBE LINK HERE](https://www.youtube.com/channel/UC1fuQBjVLSqwk-PgdeeMAyQ)
 - Subscribe to [THE YOUTUBE CHANNEL WHERE THESE IS ALWAYS POSTED SO YOU"LL BE NOTIFIED EACH TIME](https://www.youtube.com/FlutterFairy?sub_confirmation=1)
 
+
+### We're using 2 state management approaches in different branch for this project for now🙂
+
+#### Bloc Pattern
+These solution can be found in the [develop-bloc](https://github.com/hello-paulvin/city-cab/edit/develop-bloc) branch of these project
+##### How we are using it
+UI/VIEW -> BLOC -> REPOSITORIES ↔️ SERVICES -> MODELS
+The UI reponse to state changes in the [BLOC](https://pub.dev/packages?q=bloc), and data is fatch from the repositories while the services is for some dedicated services in the app; The Models blue-print our data from the server or anywhere from the app
+
+#### Provider
+These solution can be found in the [develop-provider](https://github.com/hello-paulvin/city-cab/edit/develop-provider) branch of these project
+##### How we are using it
+UI/VIEW -> STATE -> REPOSITORIES ↔️ SERVICES -> MODELS
+The UI reponse to state changes in the [state(Provider)](https://pub.dev/packages?q=provider), and data is fatch from the repositories while the services is for some dedicated services in the app; The Models blue-print our data from the server or anywhere from the app
+
+
 ## VIDEO CONTENTS
 
 ### Build A Taxi-App from Scratch; FLUTTER Eps1 Setup
