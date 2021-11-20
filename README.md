@@ -59,7 +59,7 @@ Subscribe To Flutter Fairy
 
 This is brought to you by [Paul](https://twitter.com/edeme_kong) from [FLUTTER FAIRY](https://www.youtube.com/channel/UC1fuQBjVLSqwk-PgdeeMAyQ)
 
-<a href="https://www.buymeacoffee.com/neerddevs" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
+<a href="https://www.buymeacoffee.com/flutterfairy" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
 
 PLEASE, STAR⭐️ THIS PROJECT BEFORE YOU LEAVE😃
 
