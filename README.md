@@ -1,16 +1,13 @@
-# citycab
+# CITY CAB
 
-An open source ride hailing app with flutter.
+This is an open source project to build and deploy a ride hailing app(Taxi-App) using [FLUTTER](https://flutter.dev) and [FIREBASE](https://firebase.com) as Backend.
 
-## Getting Started
+This is entirely open for contributions as it is meant for learning purpose. Code review, suggestions and ideas are welcome.
 
-This project is a starting point for a Flutter application.
+### NOTE:
+To kick start this project;
+- You must have some basic knowledge on DART/FLUTTER and FIREBASE as this is the main thing.
+- FORK⑂ and STAR⭐️ this repository. Git Clone to your local machine.
+- Follow the videos content of this project on [YOUTUBE LINK HERE](https://www.youtube.com/channel/UC1fuQBjVLSqwk-PgdeeMAyQ)
+- Subscribe to [THE YOUTUBE CHANNEL WHERE THESE IS ALWAYS POSTED SO YOU"LL BE NOTIFIED EACH TIME](https://www.youtube.com/FlutterFairy?sub_confirmation=1)
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
