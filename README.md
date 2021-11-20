@@ -15,7 +15,7 @@ To kick start this project;
 ### We're using 2 state management approaches in different branch for this project for now🙂
 
 #### Bloc Pattern
-These solution can be found in the [develop-bloc](https://github.com/hello-paulvin/city-cab/edit/develop-bloc) branch of these project
+These solution can be found in the [develop-bloc](https://github.com/hello-paulvin/city-cab/tree/develop-bloc) branch of these project
 ##### How we are using it
 ## UI/VIEW -> BLOC -> REPOSITORIES ↔️ SERVICES -> MODELS
 
@@ -23,7 +23,7 @@ These solution can be found in the [develop-bloc](https://github.com/hello-paulv
 The UI reponse to state changes in the [BLOC](https://pub.dev/packages?q=bloc), and data is fatch from the repositories while the services is for some dedicated services in the app; The Models blue-print our data from the server or anywhere from the app
 
 #### Provider
-These solution can be found in the [develop-provider](https://github.com/hello-paulvin/city-cab/edit/develop-provider) branch of these project
+These solution can be found in the [develop-provider](https://github.com/hello-paulvin/city-cab/tree/develop-provider) branch of these project
 ##### How we are using it
 ## UI/VIEW -> STATE -> REPOSITORIES ↔️ SERVICES -> MODELS
 
