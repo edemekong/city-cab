@@ -14,17 +14,17 @@ To kick start this project;
 
 ### We're using 2 state management approaches in different branch for this project for now🙂
 
-#### Bloc Pattern
+## Bloc Pattern
 These solution can be found in the [develop-bloc](https://github.com/hello-paulvin/city-cab/tree/develop-bloc) branch of these project
-##### How we are using it
+#### How we are using it
 ## UI/VIEW -> BLOC -> REPOSITORIES ↔️ SERVICES -> MODELS
 
 
 The UI reponse to state changes in the [BLOC](https://pub.dev/packages?q=bloc), and data is fatch from the repositories while the services is for some dedicated services in the app; The Models blue-print our data from the server or anywhere from the app
 
-#### Provider
+## Provider
 These solution can be found in the [develop-provider](https://github.com/hello-paulvin/city-cab/tree/develop-provider) branch of these project
-##### How we are using it
+#### How we are using it
 ## UI/VIEW -> STATE -> REPOSITORIES ↔️ SERVICES -> MODELS
 
 The UI reponse to state changes in the [state(Provider)](https://pub.dev/packages?q=provider), and data is fatch from the repositories while the services is for some dedicated services in the app; The Models blue-print our data from the server or anywhere from the app
@@ -75,6 +75,13 @@ Subscribe To Flutter Fairy
 - In this 25min video I will show you how to convert a ready bloc pattern base implementation app to a provider implementation.
 
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/UyUv9Mphd0E/0.jpg)](https://www.youtube.com/watch?v=UyUv9Mphd0E)
+
+🆕
+### Build UI for CITY CAB(BottomSlider) using PROVIDER to Change State; Flutter
+- I'm going to work you through building a decent UI for our taxi app. We'll change state using provider.
+
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/UYO8YDaGfCg/0.jpg)](https://www.youtube.com/watch?v=UYO8YDaGfCg)
+
 
 This is brought to you by [Paul](https://twitter.com/edeme_kong) from [FLUTTER FAIRY](https://www.youtube.com/channel/UC1fuQBjVLSqwk-PgdeeMAyQ)
 
