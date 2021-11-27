@@ -68,7 +68,7 @@ class ConfirmRide extends StatelessWidget {
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            'Pickup in ${state.selectedOption?.timeOfArrival.inMinutes} mins',
+                            'Pickup in ${state.selectedOption?.timeOfArrival.difference(DateTime.now()).inMinutes} mins',
                             style: TextStyle(
                               fontSize: 12,
                               color: CityTheme.cityblue,

@@ -1,22 +1,25 @@
 import 'package:citycab/models/ride_option.dart';
 import 'package:citycab/utils/icons_assets.dart';
 
-const List<RideOption> rideOptions = const [
-  const RideOption(
+List<RideOption> rideOptions = [
+  RideOption(
+    id: '00',
     title: 'Stardard',
-    timeOfArrival: const Duration(minutes: 5),
+    timeOfArrival: DateTime.now().add(Duration(minutes: 5)),
     price: 500,
     icon: IconsAssets.stardard_car,
   ),
-  const RideOption(
+  RideOption(
+    id: '01',
     title: 'Premium',
-    timeOfArrival: const Duration(minutes: 3),
+    timeOfArrival: DateTime.now().add(Duration(minutes: 3)),
     price: 1000,
     icon: IconsAssets.premium_car,
   ),
-  const RideOption(
+  RideOption(
+    id: '02',
     title: 'VIP',
-    timeOfArrival: const Duration(minutes: 2),
+    timeOfArrival: DateTime.now().add(Duration(minutes: 2)),
     price: 2000,
     icon: IconsAssets.vip_car,
   ),

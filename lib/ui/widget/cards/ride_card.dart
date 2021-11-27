@@ -48,7 +48,7 @@ class RideOptionCard extends StatelessWidget {
             ),
             const SizedBox(height: 4),
             Text(
-              '${option.timeOfArrival.inMinutes} min',
+              '${option.timeOfArrival.difference(DateTime.now()).inMinutes} min',
               style: TextStyle(
                 fontSize: 12,
                 color: isSelected ? CityTheme.cityblue : Colors.grey[800],

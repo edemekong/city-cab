@@ -20,4 +20,16 @@ class Address {
       required this.state,
       required this.country,
       required this.postcode});
+
+  factory Address.fromMap(Map<String, dynamic> data) {
+    return Address(
+      city: data['city'] ?? '',
+      country: data['country'] ?? '',
+      latLng: LatLng(data['latlng']['lat'], data['latlng']['lng']),
+      polylines: [],
+      postcode: data['post_code'] ?? '',
+      state: data['state'] ?? '',
+      street: data['street'] ?? '',
+    );
+  }
 }

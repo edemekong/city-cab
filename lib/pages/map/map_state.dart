@@ -1,6 +1,11 @@
 import 'package:citycab/constant/ride_options.dart';
 import 'package:citycab/models/address.dart';
+import 'package:citycab/models/rate.dart';
+import 'package:citycab/models/ride.dart';
 import 'package:citycab/models/ride_option.dart';
+import 'package:citycab/repositories/ride_repository.dart';
+import 'package:citycab/repositories/user_repository.dart';
+import 'package:citycab/services/code_generator.dart';
 import 'package:citycab/services/map_services.dart';
 import 'package:citycab/ui/theme.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +16,8 @@ enum RideState { initial, searchingAddress, confirmAddress, selectRide, requestR
 class MapState extends ChangeNotifier {
   GoogleMapController? controller;
   final currentPosition = MapService.instance?.currentPosition;
+  final userRepo = UserRepository.instance;
+  final rideRepo = RideRepository.instance;
 
   final currentAddressController = TextEditingController();
   final destinationAddressController = TextEditingController();
@@ -174,8 +181,31 @@ class MapState extends ChangeNotifier {
     animateToPage(pageIndex: 3, state: RideState.confirmAddress);
   }
 
-  void confirmRide() {
+  void confirmRide() async {
     animateToPage(pageIndex: 4, state: RideState.confirmAddress);
+    final ownerUID = userRepo?.currentUser?.uid;
+    if (ownerUID != null && ownerUID != '') {
+      final ride = _initializeRide(ownerUID);
+      await rideRepo?.boardRide(ride);
+    }
+  }
+
+  Ride _initializeRide(String uid) {
+    final id = CodeGenerator.instance!.generateCode('city-id');
+    final ride = Ride(
+      createdAt: DateTime.now(),
+      driverUID: '',
+      endAddress: endAddress!,
+      id: id,
+      ownerUID: uid,
+      passengers: [uid],
+      rate: Rate(uid: uid, subject: '', body: '', stars: 0),
+      rideOption: selectedOption!,
+      startAddress: startAddress!,
+      status: RideStatus.initial,
+    );
+
+    return ride;
   }
 
   void callDriver() {}
