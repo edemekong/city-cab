@@ -1,7 +1,9 @@
 import 'dart:async';
 
+import 'package:citycab/models/user.dart';
 import 'package:citycab/repositories/user_repository.dart';
 import 'package:citycab/services/auth.dart';
+import 'package:citycab/services/map_services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -13,18 +15,26 @@ class AuthState extends ChangeNotifier {
 
   PhoneAuthState _phoneAuthState = PhoneAuthState.initial;
 
+  String verificationId = '';
+
   TextEditingController phoneController = TextEditingController();
   TextEditingController otpController = TextEditingController();
   TextEditingController firstNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
+  TextEditingController licensePlateController = TextEditingController();
+  TextEditingController vehicleColorController = TextEditingController();
+  TextEditingController vehicleTypeController = TextEditingController();
+  TextEditingController vehicleManufacturersController = TextEditingController();
+  Roles role = Roles.passenger;
 
   PageController? controller;
   int pageIndex = 0;
   String uid = '';
 
-  String verificationId = '';
   int timeOut = 30;
+
+  bool get isRoleDriver => role == Roles.driver;
 
   AuthState(int page, String uid) {
     this.uid = uid;
@@ -35,6 +45,11 @@ class AuthState extends ChangeNotifier {
   }
 
   PhoneAuthState get phoneAuthState => _phoneAuthState;
+
+  set changeRoleState(int value) {
+    role = Roles.values[value];
+    notifyListeners();
+  }
 
   set phoneAuthStateChange(PhoneAuthState phoneAuthState) {
     _phoneAuthState = phoneAuthState;
@@ -52,10 +67,27 @@ class AuthState extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> signUp(final String? uid, final String firstname, final String lastname, final String email) async {
+  Future<void> signUp() async {
     phoneAuthStateChange = PhoneAuthState.loading;
+    final address = await MapService.instance?.getCurrentPosition();
     try {
-      await userRepo?.setUpAccount(uid, email, firstname, lastname);
+      final user = User(
+        uid: uid,
+        isActive: true,
+        firstname: firstNameController.text,
+        lastname: lastNameController.text,
+        email: emailController.text,
+        createdAt: DateTime.now(),
+        isVerified: true,
+        licensePlate: licensePlateController.text,
+        phone: "234${phoneController.text}",
+        vehicleType: vehicleTypeController.text,
+        vehicleColor: vehicleColorController.text,
+        vehicleManufacturer: vehicleManufacturersController.text,
+        role: role,
+        latlng: address?.latLng,
+      );
+      await userRepo.setUpAccount(user);
       phoneAuthStateChange = PhoneAuthState.success;
     } on FirebaseException catch (e) {
       print(e.message);
@@ -95,7 +127,7 @@ class AuthState extends ChangeNotifier {
     phoneAuthStateChange = PhoneAuthState.loading;
 
     final uid = await authService?.verifyAndLogin(verificationId, smsCode, phone);
-    await userRepo?.getUser(uid);
+    await userRepo.getUser(uid);
     this.uid = uid ?? '';
     animateToNextPage(2);
     notifyListeners();
@@ -104,7 +136,7 @@ class AuthState extends ChangeNotifier {
   }
 
   Future<void> siginCurrentUser() async {
-    await userRepo?.signInCurrentUser();
+    await userRepo.signInCurrentUser();
   }
 
   Future<void> codeSentEvent() async {

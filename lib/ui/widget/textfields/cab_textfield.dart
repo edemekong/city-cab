@@ -9,12 +9,14 @@ class CityTextField extends StatelessWidget {
   final void Function(String)? onChanged;
 
   final void Function(String)? onSubmitted;
+  final TextInputType? keyboardType;
   const CityTextField({
     Key? key,
     this.controller,
     this.label,
     this.onChanged,
     this.onSubmitted,
+    this.keyboardType,
   }) : super(key: key);
 
   @override
@@ -23,7 +25,7 @@ class CityTextField extends StatelessWidget {
       controller: controller,
       onChanged: onChanged,
       onSubmitted: onSubmitted,
-      keyboardType: TextInputType.text,
+      keyboardType: keyboardType ?? TextInputType.text,
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.symmetric(horizontal: 10),
         enabledBorder: OutlineInputBorder(

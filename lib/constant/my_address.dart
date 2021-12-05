@@ -3,6 +3,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 const List<Address> myAddresses = [
   const Address(
+    id: '01',
     title: 'Home',
     city: 'Port Harcourt',
     country: 'Nigeria',
@@ -13,6 +14,7 @@ const List<Address> myAddresses = [
     street: 'Trans - Amadi',
   ),
   const Address(
+    id: '02',
     title: 'Office',
     city: 'Port Harcourt',
     country: 'Nigeria',

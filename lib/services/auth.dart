@@ -1,3 +1,4 @@
+import 'package:citycab/repositories/user_repository.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -52,5 +53,14 @@ class AuthService {
   Future<String> getCredential(PhoneAuthCredential credential) async {
     final authCredential = await _auth.signInWithCredential(credential);
     return authCredential.user!.uid;
+  }
+
+  Future<bool?> logOut() async {
+    await _auth.signOut();
+    UserRepository.instance.userNotifier.value = null;
+    // ignore: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
+    UserRepository.instance.userNotifier.notifyListeners();
+
+    return true;
   }
 }

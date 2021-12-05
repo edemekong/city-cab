@@ -19,7 +19,7 @@ class PhonePage extends StatelessWidget {
               aspectRatio: 1,
               child: Container(
                 decoration:
-                    BoxDecoration(image: DecorationImage(image: AssetImage(ImagesAsset.cabBg), fit: BoxFit.fitWidth)),
+                    BoxDecoration(image: DecorationImage(image: AssetImage(ImagesAsset.cabBg), fit: BoxFit.cover)),
               ),
             ),
             Container(

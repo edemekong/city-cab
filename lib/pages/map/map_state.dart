@@ -3,6 +3,7 @@ import 'package:citycab/models/address.dart';
 import 'package:citycab/models/rate.dart';
 import 'package:citycab/models/ride.dart';
 import 'package:citycab/models/ride_option.dart';
+import 'package:citycab/models/user.dart';
 import 'package:citycab/repositories/ride_repository.dart';
 import 'package:citycab/repositories/user_repository.dart';
 import 'package:citycab/services/code_generator.dart';
@@ -15,7 +16,7 @@ enum RideState { initial, searchingAddress, confirmAddress, selectRide, requestR
 
 class MapState extends ChangeNotifier {
   GoogleMapController? controller;
-  final currentPosition = MapService.instance?.currentPosition;
+  final currentPosition = MapService.instance!.currentPosition;
   final userRepo = UserRepository.instance;
   final rideRepo = RideRepository.instance;
 
@@ -32,6 +33,8 @@ class MapState extends ChangeNotifier {
 
   FocusNode? focusNode;
   RideState _rideState = RideState.initial;
+
+  bool isActive = false;
 
   RideState get rideState {
     return _rideState;
@@ -60,6 +63,8 @@ class MapState extends ChangeNotifier {
         notifyListeners();
       });
     getCurrentLocation();
+    isActive = userRepo.currentUser?.isActive ?? false;
+    notifyListeners();
   }
 
   Set<Polyline> get polylines {
@@ -86,17 +91,35 @@ class MapState extends ChangeNotifier {
     ));
   }
 
-  Future<void> loadMyPosition(LatLng? position) async {
+  Future<Address?> loadMyPosition(LatLng? position) async {
     if (position == null) {
       final position = await MapService.instance?.getCurrentPosition();
-      MapService.instance?.listenToPositionChanges().listen((event) {});
       startAddress = position;
+
+      MapService.instance?.listenToPositionChanges(eventFiring: (Address? address) async {
+        if (address != null) {
+          if (userRepo.currentUserRole == Roles.driver) {
+            await userRepo.updateDriverLocation(UserRepository.instance.currentUser?.uid, address.latLng);
+          }
+        }
+
+        startAddress = address;
+        notifyListeners();
+        print('updating address');
+      }).listen((event) {});
+      animateCamera(startAddress!.latLng);
       notifyListeners();
     } else {
       final myPosition = await MapService.instance?.getPosition(position);
       startAddress = myPosition;
+
+      animateCamera(startAddress!.latLng);
       notifyListeners();
     }
+    MapService.instance?.markers.notifyListeners();
+
+    notifyListeners();
+    return startAddress;
   }
 
   Future<void> loadRouteCoordinates(LatLng start, LatLng end) async {
@@ -121,7 +144,7 @@ class MapState extends ChangeNotifier {
   void onMapCreated(GoogleMapController controller) {
     this.controller = controller;
     MapService.instance?.controller.googleMapController = controller;
-    animateCamera(currentPosition?.value?.latLng ?? LatLng(0, 0));
+    animateCamera(currentPosition.value?.latLng ?? LatLng(0, 0));
   }
 
   void onTapMap(LatLng argument) {
@@ -149,7 +172,7 @@ class MapState extends ChangeNotifier {
   }
 
   void getCurrentLocation() async {
-    final address = await MapService.instance?.getCurrentPosition();
+    final address = await loadMyPosition(null);
     currentAddressController.text = "${address?.street}, ${address?.city}";
     notifyListeners();
   }
@@ -183,7 +206,7 @@ class MapState extends ChangeNotifier {
 
   void confirmRide() async {
     animateToPage(pageIndex: 4, state: RideState.confirmAddress);
-    final ownerUID = userRepo?.currentUser?.uid;
+    final ownerUID = userRepo.currentUser?.uid;
     if (ownerUID != null && ownerUID != '') {
       final ride = _initializeRide(ownerUID);
       await rideRepo?.boardRide(ride);
@@ -228,5 +251,11 @@ class MapState extends ChangeNotifier {
     loadRouteCoordinates(MapService.instance!.currentPosition.value!.latLng, address.latLng);
     animateCamera(address.latLng);
     searchLocation();
+  }
+
+  void changeActivePresence() async {
+    isActive = !isActive;
+    notifyListeners();
+    await userRepo.updateOnlinePresense(userRepo.currentUser?.uid, isActive);
   }
 }

@@ -18,7 +18,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   void initState() {
-    UserRepository.instance?.signInCurrentUser();
+    UserRepository.instance.signInCurrentUser();
     super.initState();
   }
 

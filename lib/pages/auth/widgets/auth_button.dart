@@ -30,8 +30,7 @@ class AuthButton extends StatelessWidget {
                   } else if (state.phoneAuthState == PhoneAuthState.codeSent && state.pageIndex == 1) {
                     state.verifyAndLogin(state.verificationId, state.otpController.text, state.phoneController.text);
                   } else if (state.pageIndex == 2) {
-                    state.signUp(state.uid, state.firstNameController.text, state.lastNameController.text,
-                        state.emailController.text);
+                    state.signUp();
                   }
                 },
         ),

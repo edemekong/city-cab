@@ -4,6 +4,8 @@ import 'dart:typed_data';
 import 'package:citycab/constant/google_map_key.dart';
 import 'package:citycab/models/address.dart';
 import 'package:citycab/models/citycab_info_window.dart';
+import 'package:citycab/models/user.dart';
+import 'package:citycab/repositories/user_repository.dart';
 import 'package:citycab/ui/info_window/custom_info_window.dart';
 import 'package:citycab/ui/info_window/custom_widow.dart';
 import 'package:citycab/utils/images_assets.dart';
@@ -47,174 +49,88 @@ class MapService {
 
   final String baseUrl = "https://maps.googleapis.com/maps/api/directions/json";
 
+  StreamSubscription<Position>? positionStream;
+
   Duration duration = Duration();
-  final _deley = Deley(milliseconds: 2000);
+  final _deley = Deley(milliseconds: 5000);
+
+  String get getUserMapIcon {
+    Roles? userRoles = UserRepository.instance.currentUserRole;
+    return (() {
+      if (userRoles == Roles.driver) {
+        return ImagesAsset.car;
+      } else {
+        return ImagesAsset.circlePin;
+      }
+    })();
+  }
+
+  void dispose() {
+    positionStream?.cancel();
+  }
 
   ValueNotifier<Address?> currentPosition = ValueNotifier<Address?>(null);
-  ValueNotifier<Set<Marker>> markers = ValueNotifier<Set<Marker>>({});
+  ValueNotifier<List<Marker>> markers = ValueNotifier<List<Marker>>([]);
   List<Address> searchedAddress = [];
 
   CustomInfoWindowController controller = CustomInfoWindowController();
 
-  Future<Set<Marker>> addMarker(String markerId, Address? address, BitmapDescriptor icon,
-      {required DateTime time, required InfoWindowType type}) async {
-    if (address != null) {
-      final Uint8List markerIcon =
-          await getBytesFromAsset(type == InfoWindowType.position ? ImagesAsset.circlePin : ImagesAsset.pin, 65);
-      final icon = BitmapDescriptor.fromBytes(markerIcon);
-
-      final marker = Marker(
-          markerId: MarkerId(markerId),
-          position: address.latLng,
-          icon: icon,
-          onTap: () {
-            controller.addInfoWindow!(
-              CustomWindow(
-                info: CityCabInfoWindow(
-                  name: "${address.street}, ${address.city}",
-                  position: address.latLng,
-                  type: type,
-                  time: duration,
-                ),
-              ),
-              address.latLng,
-            );
-          });
-      try {
-        final markerPosition = markers.value.firstWhere((marker) => marker.markerId.value == markerId);
-        markerPosition.copyWith(positionParam: LatLng(address.latLng.latitude, address.latLng.longitude));
-        return markers.value;
-      } catch (e) {
-        markers.value.add(marker);
-        return markers.value;
-      }
-    } else {
-      return markers.value;
-    }
-  }
-
-  Future<Uint8List> getBytesFromAsset(String path, int width) async {
-    ByteData data = await rootBundle.load(path);
-    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(), targetWidth: width);
-    ui.FrameInfo fi = await codec.getNextFrame();
-    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!.buffer.asUint8List();
-  }
-
-  Future<double> getPositionBetweenKilometers(LatLng startLatLng, LatLng endLatLng) async {
-    final meters = Geolocator.distanceBetween(
-        startLatLng.latitude, startLatLng.longitude, endLatLng.latitude, endLatLng.longitude);
-    return meters / 500;
-  }
-
-  Future<Address> getAddressFromCoodinate(LatLng position, {List<PointLatLng>? polylines}) async {
-    List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
-    final placemark = placemarks.first;
-    final address = Address(
-      street: placemark.street ?? '',
-      city: placemark.locality ?? '',
-      state: placemark.administrativeArea ?? '',
-      country: placemark.country ?? '',
-      latLng: position,
-      polylines: polylines ?? [],
-      postcode: placemark.postalCode ?? '',
-    );
-    return address;
-  }
-
   Future<Address?> getCurrentPosition() async {
     final check = await requestAndCheckPermission();
-    if (check) {
-      Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
-
+    if (check == true) {
+      final position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
       final address = await getAddressFromCoodinate(LatLng(position.latitude, position.longitude));
-      currentPosition.value = address;
-      currentPosition.notifyListeners();
 
-      final icon = await getMapIcon(ImagesAsset.circlePin);
-      addMarker(CodeGenerator.instance!.generateCode('m'), currentPosition.value, icon,
-          time: DateTime.now(), type: InfoWindowType.position);
+      final icon = await getMapIcon(getUserMapIcon);
+      await addMarker(address, icon, time: DateTime.now(), type: InfoWindowType.position);
+
+      currentPosition.value = address;
+
+      // ignore: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
+      currentPosition.notifyListeners();
       return currentPosition.value;
     } else {
       return null;
     }
   }
 
-  Future<bool> requestAndCheckPermission() async {
-    final permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      final request = await Geolocator.requestPermission();
-      if (request == LocationPermission.always) {
-        return true;
-      } else {
-        return false;
-      }
-    } else if (permission == LocationPermission.always) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  Future<Address> getRouteCoordinates(LatLng? startLatLng, LatLng? endLatLng) async {
-    markers.value.clear();
-
-    var uri = Uri.parse(
-        "$baseUrl?origin=${startLatLng?.latitude},${startLatLng?.longitude}&destination=${endLatLng?.latitude},${endLatLng?.longitude}&key=${GoogleMapKey.key}");
-    http.Response response = await http.get(uri);
-    Map values = jsonDecode(response.body);
-    final points = values['routes'][0]['overview_polyline']['points'];
-    final legs = values['routes'][0]['legs'];
-    final polylines = PolylinePoints().decodePolyline(points);
-
-    if (legs != null) {
-      final DateTime time = DateTime.fromMillisecondsSinceEpoch(values['routes'][0]['legs'][0]['duration']['value']);
-      duration = DateTime.now().difference(time);
-    }
-    Address endAddress = await _getEndAddressAndAddMarkers(startLatLng, endLatLng, polylines);
-
-    /// Get our end address
-    return endAddress;
-  }
-
-  Future<Address> _getEndAddressAndAddMarkers(
-      LatLng? startLatLng, LatLng? endLatLng, List<PointLatLng> polylines) async {
-    final endAddress =
-        await getAddressFromCoodinate(LatLng(endLatLng!.latitude, endLatLng.longitude), polylines: polylines);
-    BitmapDescriptor icon = await getMapIcon(ImagesAsset.pin);
-
-    await addMarker(CodeGenerator.instance!.generateCode('m2'), endAddress, icon,
-        time: DateTime.now(), type: InfoWindowType.destination);
-
-    final startAddress =
-        await getAddressFromCoodinate(LatLng(startLatLng!.latitude, startLatLng.longitude), polylines: polylines);
-    currentPosition.value = startAddress;
-
-    BitmapDescriptor icon2 = await getMapIcon(ImagesAsset.circlePin);
-    await addMarker(CodeGenerator.instance!.generateCode('m1'), currentPosition.value, icon2,
-        time: DateTime.now(), type: InfoWindowType.position);
-
-    return endAddress;
-  }
-
-  Future<BitmapDescriptor> getMapIcon(String iconPath) async {
-    final Uint8List endMarker = await getBytesFromAsset(iconPath, 65);
-    final icon = BitmapDescriptor.fromBytes(endMarker);
-    return icon;
-  }
-
-  Stream<void> listenToPositionChanges() async* {
+  Stream<void> listenToPositionChanges({required Function(Address?) eventFiring}) async* {
     final check = await requestAndCheckPermission();
     if (check) {
-      Stream<Position> position =
-          Geolocator.getPositionStream(desiredAccuracy: LocationAccuracy.high, timeLimit: Duration(seconds: 10));
-      position.listen((position) async {
-        try {
-          final currentPositionMarker = markers.value.firstWhere((marker) => marker.markerId.value == 'm1');
-          currentPositionMarker.copyWith(positionParam: LatLng(position.latitude, position.longitude));
-        } catch (_) {}
+      print('started location');
+
+      positionStream =
+          Geolocator.getPositionStream(desiredAccuracy: LocationAccuracy.high, timeLimit: Duration(seconds: 60))
+              .listen((position) async {
+        eventFiring(currentPosition.value);
+
         currentPosition.value = await getAddressFromCoodinate(LatLng(position.latitude, position.longitude));
+
+        final icon = await getMapIcon(getUserMapIcon);
+        await addMarker(currentPosition.value, icon,
+            time: DateTime.now(), type: InfoWindowType.position, position: position);
+        // ignore: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
+        currentPosition.notifyListeners();
+
+        print('updating location');
       });
     }
+  }
+
+  Future<Address> getAddressFromCoodinate(LatLng latLng, {List<PointLatLng>? polylines, String? id}) async {
+    List<Placemark> placemarks = await placemarkFromCoordinates(latLng.latitude, latLng.longitude);
+    final placemark = placemarks.first;
+    final address = Address(
+      id: id ?? UserRepository.instance.currentUser?.uid ?? '',
+      street: placemark.street ?? '',
+      city: placemark.locality ?? '',
+      state: placemark.administrativeArea ?? '',
+      country: placemark.country ?? '',
+      latLng: latLng,
+      polylines: polylines ?? [],
+      postcode: placemark.postalCode ?? '',
+    );
+    return address;
   }
 
   Future<List<Address>> getAddressFromQuery(String query) async {
@@ -228,6 +144,7 @@ class MapService {
             for (var i = 0; i < placemarks.length; i++) {
               final placemark = placemarks[i];
               final address = Address(
+                id: CodeGenerator.instance!.generateCode('m'),
                 street: placemark.street ?? '',
                 city: placemark.locality ?? '',
                 state: placemark.administrativeArea ?? '',
@@ -253,10 +170,129 @@ class MapService {
     markers.value.clear();
     controller.hideInfoWindow!();
 
-    final icon = await getMapIcon(ImagesAsset.circlePin);
-    await addMarker(CodeGenerator.instance!.generateCode('m1'), currentPosition.value, icon,
-        time: DateTime.now(), type: InfoWindowType.position);
+    final icon = await getMapIcon(getUserMapIcon);
+    await addMarker(address, icon, time: DateTime.now(), type: InfoWindowType.position);
+    // ignore: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
+    currentPosition.notifyListeners();
 
     return address;
+  }
+
+  Future<Address> getRouteCoordinates(LatLng? startLatLng, LatLng? endLatLng) async {
+    markers.value.clear();
+
+    var uri = Uri.parse(
+        "$baseUrl?origin=${startLatLng?.latitude},${startLatLng?.longitude}&destination=${endLatLng?.latitude},${endLatLng?.longitude}&key=${GoogleMapKey.key}");
+    http.Response response = await http.get(uri);
+    Map values = jsonDecode(response.body);
+    final points = values['routes'][0]['overview_polyline']['points'];
+    final legs = values['routes'][0]['legs'];
+    final polylines = PolylinePoints().decodePolyline(points);
+
+    if (legs != null) {
+      final DateTime time = DateTime.fromMillisecondsSinceEpoch(values['routes'][0]['legs'][0]['duration']['value']);
+      duration = DateTime.now().difference(time);
+    }
+    Address endAddress = await _getEndAddressAndAddMarkers(startLatLng, endLatLng, polylines);
+
+    /// Get our end address
+    return endAddress;
+  }
+
+  Future<Address> _getEndAddressAndAddMarkers(
+      LatLng? startLatLng, LatLng? endLatLng, List<PointLatLng> polylines) async {
+    final endAddress = await getAddressFromCoodinate(LatLng(endLatLng!.latitude, endLatLng.longitude),
+        polylines: polylines, id: CodeGenerator.instance?.generateCode('m'));
+
+    BitmapDescriptor icon = await getMapIcon(ImagesAsset.pin);
+    await addMarker(endAddress, icon, time: DateTime.now(), type: InfoWindowType.destination);
+
+    final startAddress =
+        await getAddressFromCoodinate(LatLng(startLatLng!.latitude, startLatLng.longitude), polylines: polylines);
+
+    BitmapDescriptor startMapIcon = await getMapIcon(getUserMapIcon);
+    await addMarker(startAddress, startMapIcon, time: DateTime.now(), type: InfoWindowType.position);
+
+    currentPosition.value = startAddress;
+    // ignore: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
+    currentPosition.notifyListeners();
+
+    return endAddress;
+  }
+
+  Future<List<Marker>> addMarker(Address? address, BitmapDescriptor icon,
+      {required DateTime time, required InfoWindowType type, Position? position}) async {
+    if (address != null) {
+      final marker = Marker(
+          markerId: MarkerId(address.id),
+          position: address.latLng,
+          icon: icon,
+          rotation: position?.heading ?? 0,
+          anchor: Offset(0.5, 0.5),
+          zIndex: 2,
+          onTap: () {
+            controller.addInfoWindow!(
+              CustomWindow(
+                info: CityCabInfoWindow(
+                  name: "${address.street}, ${address.city}",
+                  position: address.latLng,
+                  type: type,
+                  time: duration,
+                ),
+              ),
+              address.latLng,
+            );
+          });
+
+      final markerPositionIndex = markers.value.indexWhere((marker) => marker.markerId.value == address.id);
+
+      if (markerPositionIndex != -1) {
+        markers.value.removeAt(markerPositionIndex);
+        markers.value.insert(markerPositionIndex, marker);
+      } else {
+        markers.value.add(marker);
+      }
+      // ignore: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
+      markers.notifyListeners();
+
+      return markers.value;
+    } else {
+      return markers.value;
+    }
+  }
+
+  Future<Uint8List> getBytesFromAsset(String path, int width) async {
+    ByteData data = await rootBundle.load(path);
+    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(), targetWidth: width);
+    ui.FrameInfo fi = await codec.getNextFrame();
+    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!.buffer.asUint8List();
+  }
+
+  Future<double> getPositionBetweenKilometers(LatLng startLatLng, LatLng endLatLng) async {
+    final meters = Geolocator.distanceBetween(
+        startLatLng.latitude, startLatLng.longitude, endLatLng.latitude, endLatLng.longitude);
+    return meters / 500;
+  }
+
+  Future<bool> requestAndCheckPermission() async {
+    final permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      final request = await Geolocator.requestPermission();
+      if (request == LocationPermission.always) {
+        return true;
+      } else {
+        return false;
+      }
+    } else if (permission == LocationPermission.always) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<BitmapDescriptor> getMapIcon(String iconPath) async {
+    final Uint8List endMarker = await getBytesFromAsset(iconPath, 65);
+    final icon = BitmapDescriptor.fromBytes(endMarker);
+    return icon;
   }
 }

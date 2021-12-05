@@ -2,6 +2,7 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class Address {
+  final String id;
   final String? title;
   final String street;
   final String city;
@@ -12,7 +13,8 @@ class Address {
   final List<PointLatLng> polylines;
 
   const Address(
-      {this.title,
+      {required this.id,
+      this.title,
       required this.polylines,
       required this.latLng,
       required this.street,
@@ -23,6 +25,7 @@ class Address {
 
   factory Address.fromMap(Map<String, dynamic> data) {
     return Address(
+      id: data['id'],
       city: data['city'] ?? '',
       country: data['country'] ?? '',
       latLng: LatLng(data['latlng']['lat'], data['latlng']['lng']),

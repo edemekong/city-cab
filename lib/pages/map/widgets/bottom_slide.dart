@@ -1,3 +1,4 @@
+import 'package:citycab/models/user.dart';
 import 'package:citycab/pages/map/widgets/at_destination.dart';
 import 'package:citycab/pages/map/widgets/confirm_ride.dart';
 import 'package:citycab/pages/map/widgets/driver_on_the_way.dart';
@@ -69,6 +70,9 @@ class _BottomSliderState extends State<BottomSlider> {
         return size.height;
       }
     } else {
+      if (state.userRepo.currentUserRole == Roles.driver) {
+        return size.height * 0.15;
+      }
       return size.height * 0.4;
     }
   }
