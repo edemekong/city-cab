@@ -48,7 +48,7 @@ In this video am going to talk about some CRUD operations that will be related t
 
 We'll make a singleton class for Ride Repository to always initialise it once.
 
-## �
+##
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/6TRaK3s8Nl8/0.jpg)](https://www.youtube.com/watch?v=6TRaK3s8Nl8)
 
 ### Creating Data Models; Flutter Tax-App Ep12a
