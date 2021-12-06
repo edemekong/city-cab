@@ -40,7 +40,7 @@ So you should expect;
 1. Driver's Account Setup || User Privileges
 2. Intro To Realtime
 
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/Sj3MEXB7Qk/0.jpg)](https://www.youtube.com/watch?v=Sj3MEXB7Qk)
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/-Sj3MEXB7Qk/0.jpg)](https://www.youtube.com/watch?v=-Sj3MEXB7Qk)
 
 ### Ride Repository || Services; Board Ride, Load Rides and Cancel Ride - Flutter Taxi-App Ep12b
 - This is a continuation of creating data models[https://www.youtube.com/watch?v=JX6KL...] on our previous tutorial.
