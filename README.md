@@ -34,13 +34,21 @@ The UI reponse to state changes in the [state(Provider)](https://pub.dev/package
 
 
 ## 🆕
+### Driver's Account Setup || Intro To Realtime Location Tracking || User Roles; Flutter Taxi-App Ep13
+- In this video I'm going to discuss how we can setup our driver's account base on users privileges and update our UI base on that and I'm also going to bring in realtime location tracking using the Geolocator plugin.
+So you should expect;
+1. Driver's Account Setup || User Privileges
+2. Intro To Realtime
+
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/Sj3MEXB7Qk/0.jpg)](https://www.youtube.com/watch?v=Sj3MEXB7Qk)
+
 ### Ride Repository || Services; Board Ride, Load Rides and Cancel Ride - Flutter Taxi-App Ep12b
 - This is a continuation of creating data models[https://www.youtube.com/watch?v=JX6KL...] on our previous tutorial.
 In this video am going to talk about some CRUD operations that will be related to our Ride Repository like Boarding, loading and cancelling a Ride;
 
 We'll make a singleton class for Ride Repository to always initialise it once.
 
-## 🆕
+## �
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/6TRaK3s8Nl8/0.jpg)](https://www.youtube.com/watch?v=6TRaK3s8Nl8)
 
 ### Creating Data Models; Flutter Tax-App Ep12a
